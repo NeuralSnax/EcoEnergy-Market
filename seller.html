@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Portal - Renewable Energy Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">EcoEnergy Market</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="buyer.html" class="nav-link">Buyer Portal</a></li>
+                <li><a href="seller.html" class="nav-link active">Seller Portal</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Seller Header -->
+    <section class="portal-header seller-header">
+        <div class="portal-header-content">
+            <div class="portal-icon">🏪</div>
+            <h1>Seller Portal</h1>
+            <p>Manage your energy listings and track your sales performance</p>
+        </div>
+    </section>
+
+    <!-- Seller Dashboard Section -->
+    <section class="seller-section">
+        <!-- Dashboard Summary Cards -->
+        <div class="dashboard-cards">
+            <div class="dashboard-card">
+                <div class="card-icon">📋</div>
+                <div class="card-info">
+                    <span class="card-value" id="total-listings">0</span>
+                    <span class="card-label">Active Listings</span>
+                </div>
+            </div>
+            <div class="dashboard-card">
+                <div class="card-icon">⚡</div>
+                <div class="card-info">
+                    <span class="card-value" id="energy-listed">0 kWh</span>
+                    <span class="card-label">Energy Listed</span>
+                </div>
+            </div>
+            <div class="dashboard-card">
+                <div class="card-icon">✅</div>
+                <div class="card-info">
+                    <span class="card-value" id="energy-sold">0 kWh</span>
+                    <span class="card-label">Energy Sold</span>
+                </div>
+            </div>
+            <div class="dashboard-card">
+                <div class="card-icon">💰</div>
+                <div class="card-info">
+                    <span class="card-value" id="total-earnings">$0</span>
+                    <span class="card-label">Total Earnings</span>
+                </div>
+            </div>
+            <div class="dashboard-card">
+                <div class="card-icon">📊</div>
+                <div class="card-info">
+                    <span class="card-value" id="avg-price">$0</span>
+                    <span class="card-label">Avg. Price/kWh</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="seller-layout">
+            <!-- Add Listing Form -->
+            <div class="listing-form-container">
+                <h3>➕ Add New Energy Listing</h3>
+                <form id="seller-listing-form" class="listing-form">
+                    <div class="form-group">
+                        <label for="energy-type">Energy Type *</label>
+                        <select id="energy-type" required>
+                            <option value="">Select Energy Type</option>
+                            <option value="Solar">☀️ Solar</option>
+                            <option value="Wind">💨 Wind</option>
+                            <option value="Biogas">🌱 Biogas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="energy-amount">Energy Amount (kWh) *</label>
+                        <input type="number" id="energy-amount" min="1" placeholder="e.g., 50" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="price-per-kwh">Price per kWh ($) *</label>
+                        <input type="number" id="price-per-kwh" min="0.01" step="0.01" placeholder="e.g., 5.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location *</label>
+                        <input type="text" id="location" placeholder="e.g., Delhi" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="seller-name">Seller/Company Name *</label>
+                        <input type="text" id="seller-name" placeholder="e.g., Green Energy Co." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="seller-email">Contact Email</label>
+                        <input type="email" id="seller-email" placeholder="e.g., contact@company.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="listing-description">Description (Optional)</label>
+                        <textarea id="listing-description" rows="3" placeholder="Additional details about your energy offering..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add Listing</button>
+                </form>
+            </div>
+
+            <!-- Quick Tips -->
+            <div class="seller-tips">
+                <h3>💡 Seller Tips</h3>
+                <div class="tip-card">
+                    <span class="tip-icon">📈</span>
+                    <div class="tip-content">
+                        <h4>Competitive Pricing</h4>
+                        <p>Research market rates to price your energy competitively. Average rates: Solar $4-6, Wind $3-5, Biogas $5-7 per kWh.</p>
+                    </div>
+                </div>
+                <div class="tip-card">
+                    <span class="tip-icon">📝</span>
+                    <div class="tip-content">
+                        <h4>Detailed Descriptions</h4>
+                        <p>Add details about your energy source, certifications, and delivery terms to attract more buyers.</p>
+                    </div>
+                </div>
+                <div class="tip-card">
+                    <span class="tip-icon">🔄</span>
+                    <div class="tip-content">
+                        <h4>Regular Updates</h4>
+                        <p>Keep your listings updated with current availability to maintain buyer trust and satisfaction.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Seller Listings Table -->
+        <div class="listings-table-container">
+            <div class="table-header">
+                <h3>📋 Your Listings</h3>
+                <div class="table-actions">
+                    <button class="btn btn-secondary btn-sm" onclick="exportListings()">📥 Export</button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="listings-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Energy Type</th>
+                            <th>Amount (kWh)</th>
+                            <th>Price ($/kWh)</th>
+                            <th>Total Value</th>
+                            <th>Location</th>
+                            <th>Status</th>
+                            <th>Listed Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="seller-listings-tbody">
+                        <!-- Seller listings will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            <p id="no-listings-msg" class="empty-state">No listings yet. Add your first energy listing above.</p>
+        </div>
+
+        <!-- Sales History -->
+        <div class="sales-history-container">
+            <h3>💼 Sales History</h3>
+            <div id="sales-history-content">
+                <p class="empty-state">No sales yet. Your completed sales will appear here.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Edit Listing Modal -->
+    <div id="edit-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeEditModal()">&times;</span>
+            <h3>Edit Listing</h3>
+            <form id="edit-listing-form" class="listing-form">
+                <input type="hidden" id="edit-listing-id">
+                <div class="form-group">
+                    <label for="edit-energy-type">Energy Type</label>
+                    <select id="edit-energy-type" required>
+                        <option value="Solar">☀️ Solar</option>
+                        <option value="Wind">💨 Wind</option>
+                        <option value="Biogas">🌱 Biogas</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-energy-amount">Energy Amount (kWh)</label>
+                    <input type="number" id="edit-energy-amount" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-price-per-kwh">Price per kWh ($)</label>
+                    <input type="number" id="edit-price-per-kwh" min="0.01" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-location">Location</label>
+                    <input type="text" id="edit-location" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="modal-icon">✅</div>
+            <h3>Success!</h3>
+            <p id="confirmation-message">Operation completed successfully.</p>
+            <button class="btn btn-primary" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Renewable Energy Marketplace Portal. Powering a sustainable future.</p>
+    </footer>
+
+    <script src="seller.js"></script>
+</body>
+</html>

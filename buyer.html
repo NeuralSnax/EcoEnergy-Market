@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyer Portal - Renewable Energy Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <span class="logo-icon">⚡</span>
+                <span class="logo-text">EcoEnergy Market</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="buyer.html" class="nav-link active">Buyer Portal</a></li>
+                <li><a href="seller.html" class="nav-link">Seller Portal</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Buyer Header -->
+    <section class="portal-header buyer-header">
+        <div class="portal-header-content">
+            <div class="portal-icon">🛒</div>
+            <h1>Buyer Portal</h1>
+            <p>Browse and purchase renewable energy from verified sellers</p>
+        </div>
+    </section>
+
+    <!-- Buyer Marketplace Section -->
+    <section class="marketplace-section">
+        <!-- Filters -->
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All Energy Types</button>
+            <button class="filter-btn" data-filter="Solar">☀️ Solar</button>
+            <button class="filter-btn" data-filter="Wind">💨 Wind</button>
+            <button class="filter-btn" data-filter="Biogas">🌱 Biogas</button>
+        </div>
+
+        <!-- Stats Bar -->
+        <div class="buyer-stats">
+            <div class="stat-item">
+                <span class="stat-value" id="available-listings">0</span>
+                <span class="stat-label">Available Listings</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="total-purchases">0</span>
+                <span class="stat-label">Your Purchases</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-value" id="total-spent">$0</span>
+                <span class="stat-label">Total Spent</span>
+            </div>
+        </div>
+
+        <!-- Listings Grid -->
+        <div class="section-header">
+            <h2>Available Energy Listings</h2>
+            <p>Find the best renewable energy deals in your area</p>
+        </div>
+
+        <div id="buyer-listings-container" class="listings-grid">
+            <!-- Listings will be dynamically inserted here -->
+        </div>
+
+        <!-- Purchase History -->
+        <div class="purchase-history">
+            <div class="purchase-history-header">
+                <h3>📋 Your Purchase History</h3>
+                <button class="btn btn-secondary btn-sm" onclick="clearPurchaseHistory()">Clear History</button>
+            </div>
+            <div id="buyer-purchase-history-container">
+                <p class="empty-state">No purchases yet. Buy energy to see your history here.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Energy Details Modal -->
+    <div id="energy-modal" class="modal hidden">
+        <div class="modal-content modal-large">
+            <span class="close-btn" onclick="closeEnergyModal()">&times;</span>
+            <div class="energy-detail-header">
+                <span class="energy-detail-icon" id="modal-energy-icon">☀️</span>
+                <div>
+                    <h3 id="modal-energy-type">Solar Energy</h3>
+                    <p id="modal-seller-name">Green Solar</p>
+                </div>
+            </div>
+            <div class="energy-detail-body">
+                <div class="detail-row">
+                    <span class="detail-label">Energy Available:</span>
+                    <span class="detail-value" id="modal-energy-amount">30 kWh</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Price per kWh:</span>
+                    <span class="detail-value highlight" id="modal-price">$5.00</span>
+                </div>
+                
+                <!-- Power Amount Selector -->
+                <div class="power-selector-section">
+                    <label class="power-selector-label">Select Amount to Purchase:</label>
+                    <div class="power-slider-container">
+                        <input type="range" id="power-slider" min="1" max="30" value="30" class="power-slider">
+                        <div class="power-slider-info">
+                            <span class="power-min">1 kWh</span>
+                            <span class="power-current" id="power-current">30 kWh</span>
+                            <span class="power-max" id="power-max">30 kWh</span>
+                        </div>
+                    </div>
+                    <div class="quick-select-buttons">
+                        <button class="quick-select-btn" onclick="setPowerAmount(25)">25%</button>
+                        <button class="quick-select-btn" onclick="setPowerAmount(50)">50%</button>
+                        <button class="quick-select-btn" onclick="setPowerAmount(75)">75%</button>
+                        <button class="quick-select-btn active" onclick="setPowerAmount(100)">100%</button>
+                    </div>
+                </div>
+                
+                <div class="detail-row total-cost-row">
+                    <span class="detail-label">Total Cost:</span>
+                    <span class="detail-value highlight" id="modal-total">$150.00</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Location:</span>
+                    <span class="detail-value" id="modal-location">Delhi</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Seller Rating:</span>
+                    <span class="detail-value">⭐⭐⭐⭐⭐ (4.8/5)</span>
+                </div>
+            </div>
+            <div class="energy-detail-footer">
+                <button class="btn btn-secondary" onclick="closeEnergyModal()">Cancel</button>
+                <button class="btn btn-primary" id="modal-buy-btn">Buy Energy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmation-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <div class="modal-icon">✅</div>
+            <h3>Purchase Confirmed!</h3>
+            <p id="confirmation-message">Your energy purchase has been successfully processed.</p>
+            <button class="btn btn-primary" onclick="closeModal()">OK</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Renewable Energy Marketplace Portal. Powering a sustainable future.</p>
+    </footer>
+
+    <script src="buyer.js"></script>
+</body>
+</html>
