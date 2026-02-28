@@ -82,6 +82,394 @@ function getEnergyIcon(type) {
     }
 }
 
+// Mock Weather Data Generator
+function getWeatherForLocation(location, energyType) {
+    // Generate realistic weather based on location and energy type
+    const weatherConditions = {
+        'Delhi': { 
+            temp: 32, 
+            condition: 'sunny', 
+            humidity: 45, 
+            windSpeed: 12, 
+            windDirection: 'NW',
+            pressure: 1012,
+            airQuality: 'Moderate'
+        },
+        'Mumbai': { 
+            temp: 29, 
+            condition: 'partly-cloudy', 
+            humidity: 78, 
+            windSpeed: 18, 
+            windDirection: 'SW',
+            pressure: 1008,
+            airQuality: 'Poor'
+        },
+        'Gujarat': { 
+            temp: 35, 
+            condition: 'sunny', 
+            humidity: 40, 
+            windSpeed: 25, 
+            windDirection: 'W',
+            pressure: 1010,
+            airQuality: 'Good'
+        },
+        'Punjab': { 
+            temp: 28, 
+            condition: 'cloudy', 
+            humidity: 55, 
+            windSpeed: 15, 
+            windDirection: 'NE',
+            pressure: 1015,
+            airQuality: 'Moderate'
+        },
+        'Tamil Nadu': { 
+            temp: 31, 
+            condition: 'sunny', 
+            humidity: 65, 
+            windSpeed: 22, 
+            windDirection: 'SE',
+            pressure: 1009,
+            airQuality: 'Good'
+        }
+    };
+    
+    const defaultWeather = { 
+        temp: 28, 
+        condition: 'sunny', 
+        humidity: 50, 
+        windSpeed: 15, 
+        windDirection: 'N',
+        pressure: 1013,
+        airQuality: 'Moderate'
+    };
+    
+    const weather = weatherConditions[location] || defaultWeather;
+    
+    // Calculate generation potential based on energy type and weather
+    let generationPotential = 'Good';
+    let potentialColor = 'good';
+    let potentialIcon = '✓';
+    let extraInfo = '';
+    
+    if (energyType === 'Solar') {
+        // Solar depends on sunlight/cloud cover, temperature, and air quality
+        let solarScore = 0;
+        let stateDetails = [];
+        
+        // Sunlight condition scoring
+        if (weather.condition === 'sunny') {
+            solarScore += 50;
+            stateDetails.push('☀️ Full Sun');
+        } else if (weather.condition === 'partly-cloudy') {
+            solarScore += 35;
+            stateDetails.push('⛅ Partial Cloud');
+        } else if (weather.condition === 'cloudy') {
+            solarScore += 15;
+            stateDetails.push('☁️ Heavy Cloud');
+        } else {
+            solarScore += 5;
+            stateDetails.push('🌧️ Rain/Storm');
+        }
+        
+        // Temperature factor (solar panels work best at 25-35°C)
+        if (weather.temp >= 25 && weather.temp <= 35) {
+            solarScore += 25;
+            stateDetails.push('🌡️ Optimal Temp');
+        } else if (weather.temp >= 20 && weather.temp < 25) {
+            solarScore += 20;
+            stateDetails.push('🌡️ Good Temp');
+        } else if (weather.temp > 35 && weather.temp <= 40) {
+            solarScore += 15;
+            stateDetails.push('🌡️ High Temp');
+        } else {
+            solarScore += 10;
+            stateDetails.push('🌡️ Low Temp');
+        }
+        
+        // Humidity factor (lower is better for solar)
+        if (weather.humidity <= 50) {
+            solarScore += 15;
+            stateDetails.push('💧 Low Humidity');
+        } else if (weather.humidity <= 70) {
+            solarScore += 10;
+            stateDetails.push('💧 Moderate Humidity');
+        } else {
+            solarScore += 5;
+            stateDetails.push('💧 High Humidity');
+        }
+        
+        // Air quality factor
+        if (weather.airQuality === 'Good') {
+            solarScore += 10;
+            stateDetails.push('😊 Clean Air');
+        } else if (weather.airQuality === 'Moderate') {
+            solarScore += 5;
+            stateDetails.push('😐 Moderate Air');
+        } else {
+            stateDetails.push('😷 Poor Air');
+        }
+        
+        // Determine generation state
+        if (solarScore >= 85) {
+            generationPotential = 'Peak';
+            potentialColor = 'peak';
+            potentialIcon = '⚡';
+            extraInfo = stateDetails.join(' • ');
+        } else if (solarScore >= 70) {
+            generationPotential = 'Excellent';
+            potentialColor = 'excellent';
+            potentialIcon = '☀️';
+            extraInfo = stateDetails.join(' • ');
+        } else if (solarScore >= 55) {
+            generationPotential = 'Good';
+            potentialColor = 'good';
+            potentialIcon = '✓';
+            extraInfo = stateDetails.join(' • ');
+        } else if (solarScore >= 40) {
+            generationPotential = 'Fair';
+            potentialColor = 'fair';
+            potentialIcon = '~';
+            extraInfo = stateDetails.join(' • ');
+        } else {
+            generationPotential = 'Poor';
+            potentialColor = 'poor';
+            potentialIcon = '!';
+            extraInfo = stateDetails.join(' • ');
+        }
+        
+    } else if (energyType === 'Wind') {
+        // Wind energy depends on wind speed, direction consistency, and atmospheric pressure
+        let windScore = 0;
+        let stateDetails = [];
+        
+        // Wind speed scoring with detailed states
+        if (weather.windSpeed >= 30) {
+            windScore += 45;
+            stateDetails.push('💨 Storm Force');
+        } else if (weather.windSpeed >= 25) {
+            windScore += 40;
+            stateDetails.push('💨 High Wind');
+        } else if (weather.windSpeed >= 20) {
+            windScore += 35;
+            stateDetails.push('💨 Strong Wind');
+        } else if (weather.windSpeed >= 15) {
+            windScore += 25;
+            stateDetails.push('💨 Good Wind');
+        } else if (weather.windSpeed >= 10) {
+            windScore += 15;
+            stateDetails.push('💨 Light Wind');
+        } else if (weather.windSpeed >= 5) {
+            windScore += 8;
+            stateDetails.push('💨 Breeze');
+        } else {
+            windScore += 2;
+            stateDetails.push('💨 Calm');
+        }
+        
+        // Wind direction consistency
+        const consistentDirections = ['W', 'NW', 'SW'];
+        if (consistentDirections.includes(weather.windDirection)) {
+            windScore += 10;
+            stateDetails.push(`🧭 ${weather.windDirection} Prevailing`);
+        } else {
+            stateDetails.push(`🧭 ${weather.windDirection} Variable`);
+        }
+        
+        // Pressure differential indicator
+        if (weather.pressure < 1005) {
+            windScore += 25;
+            stateDetails.push('📉 Deep Low Pressure');
+        } else if (weather.pressure < 1010) {
+            windScore += 20;
+            stateDetails.push('📉 Low Pressure');
+        } else if (weather.pressure > 1015) {
+            windScore += 10;
+            stateDetails.push('📈 High Pressure');
+        } else {
+            windScore += 15;
+            stateDetails.push('📊 Normal Pressure');
+        }
+        
+        // Coastal locations often have more consistent winds
+        const coastalLocations = ['Gujarat', 'Tamil Nadu', 'Mumbai'];
+        if (coastalLocations.includes(location)) {
+            windScore += 15;
+            stateDetails.push('🌊 Coastal Advantage');
+        }
+        
+        // Temperature factor (wind turbines work in all temps but extreme cold affects mechanics)
+        if (weather.temp >= 10 && weather.temp <= 35) {
+            windScore += 5;
+            stateDetails.push('🌡️ Optimal Temp');
+        } else if (weather.temp < 10) {
+            stateDetails.push('🌡️ Cold Conditions');
+        } else {
+            stateDetails.push('🌡️ Hot Conditions');
+        }
+        
+        // Determine generation state with detailed levels
+        if (windScore >= 85) {
+            generationPotential = 'Storm';
+            potentialColor = 'storm';
+            potentialIcon = '⚡';
+            extraInfo = stateDetails.join(' • ');
+        } else if (windScore >= 70) {
+            generationPotential = 'Excellent';
+            potentialColor = 'excellent';
+            potentialIcon = '💨';
+            extraInfo = stateDetails.join(' • ');
+        } else if (windScore >= 55) {
+            generationPotential = 'Good';
+            potentialColor = 'good';
+            potentialIcon = '✓';
+            extraInfo = stateDetails.join(' • ');
+        } else if (windScore >= 40) {
+            generationPotential = 'Moderate';
+            potentialColor = 'fair';
+            potentialIcon = '~';
+            extraInfo = stateDetails.join(' • ');
+        } else if (windScore >= 25) {
+            generationPotential = 'Low';
+            potentialColor = 'poor';
+            potentialIcon = '↓';
+            extraInfo = stateDetails.join(' • ');
+        } else {
+            generationPotential = 'Minimal';
+            potentialColor = 'minimal';
+            potentialIcon = '!';
+            extraInfo = stateDetails.join(' • ');
+        }
+        
+    } else if (energyType === 'Biogas') {
+        // Biogas depends on temperature, humidity, pressure for digestion process
+        // Optimal biogas production: 35-40°C (mesophilic) or 50-60°C (thermophilic)
+        let biogasScore = 0;
+        let stateDetails = [];
+        
+        // Temperature factor with detailed states
+        if (weather.temp >= 35 && weather.temp <= 40) {
+            biogasScore += 45;
+            stateDetails.push('🌡️ Thermophilic Peak');
+        } else if (weather.temp >= 30 && weather.temp < 35) {
+            biogasScore += 40;
+            stateDetails.push('🌡️ Mesophilic Optimal');
+        } else if (weather.temp >= 25 && weather.temp < 30) {
+            biogasScore += 30;
+            stateDetails.push('🌡️ Good Fermentation');
+        } else if (weather.temp >= 20 && weather.temp < 25) {
+            biogasScore += 20;
+            stateDetails.push('🌡️ Moderate Activity');
+        } else if (weather.temp >= 15 && weather.temp < 20) {
+            biogasScore += 12;
+            stateDetails.push('🌡️ Slow Digestion');
+        } else if (weather.temp < 15) {
+            biogasScore += 5;
+            stateDetails.push('🌡️ Cold - Very Slow');
+        } else {
+            biogasScore += 25;
+            stateDetails.push('🌡️ Hot - Cooling Needed');
+        }
+        
+        // Humidity affects feedstock moisture
+        if (weather.humidity >= 55 && weather.humidity <= 65) {
+            biogasScore += 20;
+            stateDetails.push('💧 Optimal Moisture');
+        } else if (weather.humidity >= 45 && weather.humidity < 55) {
+            biogasScore += 18;
+            stateDetails.push('💧 Good Moisture');
+        } else if (weather.humidity >= 65 && weather.humidity <= 75) {
+            biogasScore += 15;
+            stateDetails.push('💧 High Moisture');
+        } else if (weather.humidity > 75) {
+            biogasScore += 10;
+            stateDetails.push('💧 Too Wet');
+        } else {
+            biogasScore += 12;
+            stateDetails.push('💧 Dry - Add Water');
+        }
+        
+        // Pressure affects gas collection and system pressure
+        if (weather.pressure >= 1010 && weather.pressure <= 1015) {
+            biogasScore += 10;
+            stateDetails.push('📊 Optimal Pressure');
+        } else if (weather.pressure >= 1005 && weather.pressure < 1010) {
+            biogasScore += 8;
+            stateDetails.push('📊 Low Pressure');
+        } else if (weather.pressure > 1015) {
+            biogasScore += 7;
+            stateDetails.push('📊 High Pressure');
+        } else {
+            biogasScore += 5;
+            stateDetails.push('📊 Very Low Pressure');
+        }
+        
+        // Air quality affects microbial health
+        if (weather.airQuality === 'Good') {
+            biogasScore += 10;
+            stateDetails.push('😊 Clean Air');
+        } else if (weather.airQuality === 'Moderate') {
+            biogasScore += 7;
+            stateDetails.push('😐 Moderate Air');
+        } else {
+            biogasScore += 4;
+            stateDetails.push('😷 Poor Air Quality');
+        }
+        
+        // Temperature stability indicator (based on location climate)
+        const stableRegions = ['Punjab', 'Tamil Nadu'];
+        if (stableRegions.includes(location)) {
+            biogasScore += 5;
+            stateDetails.push('📍 Stable Climate');
+        }
+        
+        // Determine generation state with detailed levels
+        if (biogasScore >= 80) {
+            generationPotential = 'Peak';
+            potentialColor = 'peak';
+            potentialIcon = '🌱';
+            extraInfo = stateDetails.join(' • ');
+        } else if (biogasScore >= 65) {
+            generationPotential = 'Excellent';
+            potentialColor = 'excellent';
+            potentialIcon = '🌿';
+            extraInfo = stateDetails.join(' • ');
+        } else if (biogasScore >= 50) {
+            generationPotential = 'Good';
+            potentialColor = 'good';
+            potentialIcon = '✓';
+            extraInfo = stateDetails.join(' • ');
+        } else if (biogasScore >= 35) {
+            generationPotential = 'Moderate';
+            potentialColor = 'fair';
+            potentialIcon = '~';
+            extraInfo = stateDetails.join(' • ');
+        } else if (biogasScore >= 20) {
+            generationPotential = 'Slow';
+            potentialColor = 'poor';
+            potentialIcon = '↓';
+            extraInfo = stateDetails.join(' • ');
+        } else {
+            generationPotential = 'Dormant';
+            potentialColor = 'minimal';
+            potentialIcon = '!';
+            extraInfo = stateDetails.join(' • ');
+        }
+    }
+    
+    return { ...weather, generationPotential, potentialColor, potentialIcon, extraInfo };
+}
+
+// Get Weather Icon
+function getWeatherIcon(condition) {
+    const icons = {
+        'sunny': '☀️',
+        'partly-cloudy': '⛅',
+        'cloudy': '☁️',
+        'rainy': '🌧️'
+    };
+    return icons[condition] || '☀️';
+}
+
 // Update Stats
 function updateStats() {
     const activeListings = listings.filter(l => l.status === 'active');
@@ -123,12 +511,33 @@ function createListingCard(listing) {
     card.className = 'listing-card';
     
     const totalPrice = (listing.energy * listing.price).toFixed(2);
+    const weather = getWeatherForLocation(listing.location, listing.type);
     
     card.innerHTML = `
         <div class="card-header">
             <span class="energy-type-badge ${listing.type.toLowerCase()}">${listing.type}</span>
             <span class="energy-icon">${getEnergyIcon(listing.type)}</span>
         </div>
+        
+        <!-- Weather Widget -->
+        <div class="weather-widget">
+            <div class="weather-main">
+                <span class="weather-icon">${getWeatherIcon(weather.condition)}</span>
+                <span class="weather-temp">${weather.temp}°C</span>
+            </div>
+            <div class="weather-details">
+                <span class="weather-humidity">💧 ${weather.humidity}%</span>
+                <span class="weather-wind">💨 ${weather.windSpeed} km/h</span>
+                ${listing.type === 'Wind' ? `<span class="weather-direction">🧭 ${weather.windDirection}</span>` : ''}
+                ${listing.type === 'Biogas' ? `<span class="weather-pressure">📊 ${weather.pressure} hPa</span>` : ''}
+            </div>
+            <div class="generation-potential potential-${weather.potentialColor}">
+                <span class="potential-icon">${weather.potentialIcon}</span>
+                <span class="potential-text">${weather.generationPotential} Generation</span>
+            </div>
+            ${weather.extraInfo ? `<div class="weather-extra-info">${weather.extraInfo}</div>` : ''}
+        </div>
+        
         <div class="card-body">
             <div class="card-detail">
                 <span class="card-detail-label">Energy Available</span>
